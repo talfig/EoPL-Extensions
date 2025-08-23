@@ -97,8 +97,8 @@
             (if (= (length vals) 1)
               (value-of body (extend-env var (car vals) saved-env))
               (eopl:error 'apply-procedure
-                          "Procedure ~s expected 1 argument, got ~s"
-                           var (length vals))))))))
+                          "Procedure expected 1 argument, got ~s"
+                           (length vals))))))))
 
   
   (define (apply-each exp id env)
