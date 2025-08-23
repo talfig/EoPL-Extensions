@@ -16,7 +16,9 @@
     (bool-val
       (boolean boolean?))
     (proc-val 
-      (proc proc?)))
+      (proc proc?))
+    (list-val 
+     (vals (list-of expval?))))
 
 ;;; extractors:
 
@@ -40,6 +42,13 @@
       (cases expval v
 	(proc-val (proc) proc)
 	(else (expval-extractor-error 'proc v)))))
+  
+  ;; expval->proc : ExpVal -> List
+  (define expval->list
+    (lambda (v)
+      (cases expval v
+        (list-val (vals) vals)
+        (else (expval-extractor-error 'list v)))))
 
   (define expval-extractor-error
     (lambda (variant value)

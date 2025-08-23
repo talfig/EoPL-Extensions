@@ -39,7 +39,14 @@
 
         ;\commentbox{ (value-of (var-exp \x{}) \r) 
         ;              = (deref (apply-env \r \x{}))}
-        (var-exp (var) (deref (apply-env env var)))
+        (var-exp (var) 
+          (let ((val (deref (apply-env env var))))
+            (cases expval val
+              (uninit-val () 
+                (begin
+                  (eopl:printf "Warning: You are using uninitialized variable ~s\n" var)
+                  val))
+              (else val))))
 
         ;\commentbox{\diffspec}
         (diff-exp (exp1 exp2)
@@ -75,9 +82,15 @@
           (proc-val (procedure var body env)))
 
         (call-exp (rator rand)
-          (let ((proc (expval->proc (value-of rator env)))
-                (arg (value-of rand env)))
-            (apply-procedure proc arg)))
+          (let* ((proc (expval->proc (value-of rator env)))
+                (arg (value-of rand env))
+                (ret (apply-procedure proc arg)))
+            (cases expval ret
+              (uninit-val ()
+                (begin
+                  (eopl:printf "Warning: You are using uninitialized value\n")
+                   ret))
+              (else ret))))
 
         (letrec-exp (p-names b-vars p-bodies letrec-body)
           (value-of letrec-body
@@ -99,6 +112,9 @@
               (apply-env env var)
               (value-of exp1 env))
             (num-val 27)))
+        
+        (uninit-exp ()
+          (uninit-val))
 
         )))
 

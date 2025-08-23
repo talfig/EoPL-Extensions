@@ -68,19 +68,44 @@
         (proc-exp (var body)
           (proc-val (procedure var body env)))
 
-        (call-exp (rator rand)
+        (call-exp (rator rands)
           (let ((proc (expval->proc (value-of rator env)))
-                (arg (value-of rand env)))
-            (apply-procedure proc arg)))
-
+            (args (map (lambda (rand) (value-of rand env)) rands)))
+              (apply-procedure proc args)))
+        
+        (varproc-exp (body)
+          (proc-val (procedure 'args body env)))
+        
+        (each-exp (id body-exp)
+          (let* ((args (expval->list (apply-env env 'args)))
+            (results (map (apply-each body-exp id env) args)))
+              (list-val results)))
+        
         )))
 
   ;; apply-procedure : Proc * ExpVal -> ExpVal
   ;; Page: 79
   (define apply-procedure
-    (lambda (proc1 val)
-      (cases proc proc1
-        (procedure (var body saved-env)
-          (value-of body (extend-env var val saved-env))))))
+  (lambda (proc1 vals)
+    (cases proc proc1
+      (procedure (var body saved-env)
+        (if (eqv? var 'args)
+            ;; varproc case: bind *all* vals as a list
+            (value-of body
+                      (extend-env 'args (list-val vals) saved-env))
+            ;; normal proc: must have exactly one argument
+            (if (= (length vals) 1)
+                (value-of body
+                          (extend-env var (car vals) saved-env))
+                (eopl:error 'apply-procedure
+                            "Procedure ~s expected 1 argument, got ~s"
+                            var (length vals))))))))
 
+  
+  (define (apply-each exp id env)
+    (lambda (arg)
+      (value-of exp (extend-env id arg env))))
+  
   )
+
+  

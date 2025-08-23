@@ -66,34 +66,12 @@
         -1)
       
       (y-combinator-1 "
-       let fix =  proc (f)
-       let d = proc (x) proc (z) ((f (x x)) z)
-       in proc (n) ((f (d d)) n)
-       in let
-       t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
-       in let times4 = (fix t4m)
-       in (times4 3)" 12)
-      
-      (varproc-1 "
-       let p = varproc(...)
-       each v in args do
-       -(v, 2)
-       in (p 10 20 30)" (8 18 28))
-      
-      (varproc-2 "
-       let p = varproc(...)
-       each v in args do
-       -(v, 2)
-       in (p)" ())
-      
-      (varproc-3 "
-       let p = varproc(...)
-       each q in args do
-       (q 8)
-       in (p 
-           proc(a) -(a, 1) 
-           proc(b) zero?(b))"
-       (7 #f))
-      
+let fix =  proc (f)
+            let d = proc (x) proc (z) ((f (x x)) z)
+            in proc (n) ((f (d d)) n)
+in let
+    t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
+in let times4 = (fix t4m)
+   in (times4 3)" 12)
       ))
   )

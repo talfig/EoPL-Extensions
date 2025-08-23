@@ -64,73 +64,87 @@
       (nested-procs2 "let f = proc(x) proc (y) -(x,y) in ((f -(10,5)) 6)"
         -1)
       
-       (y-combinator-1 "
-let fix =  proc (f)
-            let d = proc (x) proc (z) ((f (x x)) z)
-            in proc (n) ((f (d d)) n)
-in let
-    t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
-in let times4 = (fix t4m)
-   in (times4 3)" 12)
+      (y-combinator-1 "
+       let fix =  proc (f)
+       let d = proc (x) proc (z) ((f (x x)) z)
+       in proc (n) ((f (d d)) n)
+       in let
+       t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
+       in let times4 = (fix t4m)
+       in (times4 3)" 12)
       
        ;; simple letrecs
       (simple-letrec-1 "letrec f(x) = -(x,1) in (f 33)" 32)
-      (simple-letrec-2
-        "letrec f(x) = if zero?(x)  then 0 else -((f -(x,1)), -2) in (f 4)"
-        8)
+      (simple-letrec-2 "
+       letrec f(x) = if zero?(x)  then 0 else -((f -(x,1)), -2) in (f 4)"
+       8)
 
-      (simple-letrec-3
-        "let m = -5 
- in letrec f(x) = if zero?(x) then 0 else -((f -(x,1)), m) in (f 4)"
-        20)
+      (simple-letrec-3 "
+       let m = -5 
+       in letrec f(x) = if zero?(x) then 0 else -((f -(x,1)), m) in (f 4)"
+       20)
       
-;      (fact-of-6  "letrec
-;  fact(x) = if zero?(x) then 1 else *(x, (fact sub1(x)))
-;in (fact 6)" 
-;                  720)
       
-      (HO-nested-letrecs
-"letrec even(odd)  = proc(x) if zero?(x) then 1 else (odd -(x,1))
-   in letrec  odd(x)  = if zero?(x) then 0 else ((even odd) -(x,1))
-   in (odd 13)" 1)
+      (HO-nested-letrecs "
+       letrec even(odd)  = proc(x) if zero?(x) then 1 else (odd -(x,1))
+       in letrec  odd(x)  = if zero?(x) then 0 else ((even odd) -(x,1))
+       in (odd 13)" 1)
 
       
-      (begin-test-1
-        "begin 1; 2; 3 end"
+      (begin-test-1 "
+        begin 1; 2 ; 3 end"
         3)
 
       ;; extremely primitive testing for mutable variables
 
-      (assignment-test-1 "let x = 17
-                          in begin set x = 27; x end"
-        27)
+      (assignment-test-1 "
+       let x = 17
+       in begin set x = 27 ; x end"
+       27)
 
 
-      (gensym-test
-"let g = let count = 0 in proc(d) 
-                        let d = set count = -(count,-1)
-                        in count
-in -((g 11), (g 22))"
--1)
+      (gensym-test "
+       let g = let count = 0 in proc(d) 
+       let d = set count = -(count,-1)
+       in count
+       in -((g 11), (g 22))"
+       -1)
 
       (even-odd-via-set "
-let x = 0
-in letrec even(d) = if zero?(x) then 1 
-                                  else let d = set x = -(x,1)
-                                       in (odd d)
-              odd(d)  = if zero?(x) then 0 
-                                  else let d = set x = -(x,1)
-                                       in (even d)
-   in let d = set x = 13 in (odd -99)" 1)
+       let x = 0
+       in letrec even(d) = if zero?(x) then 1 
+       else let d = set x = -(x,1)
+       in (odd d)
+       odd(d)  = if zero?(x) then 0 
+       else let d = set x = -(x,1)
+       in (even d)
+       in let d = set x = 13 in (odd -99)" 1)
 
       (example-for-book-1 "
-let f = proc (x) proc (y) 
-                  begin
-                   set x = -(x,-1);
-                   -(x,y)
-                  end
-in ((f 44) 33)"
+       let f = proc (x) proc (y) 
+       begin
+       set x = -(x,-1);
+       -(x,y)
+       end
+       in ((f 44) 33)"
 	12)
+      
+      (uninit-variable "
+       let z = ??? in
+       let w = 50 in 
+       let y = proc (a) -(a, 5) in
+       begin
+       -(z, w);
+       (y w);
+       (y z);
+       set z = 270;
+       -(z, w);
+       (y z)
+       end" 265)
+      
+      (uninit-value "
+       let p = proc (a) ???
+       in -((p 7), 20)" 880)
       
       ))
   )

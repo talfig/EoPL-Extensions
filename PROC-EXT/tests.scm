@@ -1,6 +1,7 @@
 (module tests mzscheme
   
   (provide test-list)
+
   ;;;;;;;;;;;;;;;; tests ;;;;;;;;;;;;;;;;
   
   (define test-list
@@ -64,73 +65,35 @@
       (nested-procs2 "let f = proc(x) proc (y) -(x,y) in ((f -(10,5)) 6)"
         -1)
       
-       (y-combinator-1 "
-let fix =  proc (f)
-            let d = proc (x) proc (z) ((f (x x)) z)
-            in proc (n) ((f (d d)) n)
-in let
-    t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
-in let times4 = (fix t4m)
-   in (times4 3)" 12)
+      (y-combinator-1 "
+       let fix =  proc (f)
+       let d = proc (x) proc (z) ((f (x x)) z)
+       in proc (n) ((f (d d)) n)
+       in let
+       t4m = proc (f) proc(x) if zero?(x) then 0 else -((f -(x,1)),-4)
+       in let times4 = (fix t4m)
+       in (times4 3)" 12)
       
-       ;; simple letrecs
-      (simple-letrec-1 "letrec f(x) = -(x,1) in (f 33)" 32)
-      (simple-letrec-2
-        "letrec f(x) = if zero?(x)  then 0 else -((f -(x,1)), -2) in (f 4)"
-        8)
-
-      (simple-letrec-3
-        "let m = -5 
- in letrec f(x) = if zero?(x) then 0 else -((f -(x,1)), m) in (f 4)"
-        20)
+      (varproc-1 "
+       let p = varproc(...)
+       each v in args do
+       -(v, 2)
+       in (p 10 20 30)" (8 18 28))
       
-;      (fact-of-6  "letrec
-;  fact(x) = if zero?(x) then 1 else *(x, (fact sub1(x)))
-;in (fact 6)" 
-;                  720)
+      (varproc-2 "
+       let p = varproc(...)
+       each v in args do
+       -(v, 2)
+       in (p)" ())
       
-      (HO-nested-letrecs
-"letrec even(odd)  = proc(x) if zero?(x) then 1 else (odd -(x,1))
-   in letrec  odd(x)  = if zero?(x) then 0 else ((even odd) -(x,1))
-   in (odd 13)" 1)
-
-      
-      (begin-test-1
-        "begin 1; 2; 3 end"
-        3)
-
-      ;; extremely primitive testing for mutable variables
-
-      (assignment-test-1 "let x = 17
-                          in begin set x = 27; x end"
-        27)
-
-
-      (gensym-test
-"let g = let count = 0 in proc(d) 
-                        let d = set count = -(count,-1)
-                        in count
-in -((g 11), (g 22))"
--1)
-
-      (even-odd-via-set "
-let x = 0
-in letrec even(d) = if zero?(x) then 1 
-                                  else let d = set x = -(x,1)
-                                       in (odd d)
-              odd(d)  = if zero?(x) then 0 
-                                  else let d = set x = -(x,1)
-                                       in (even d)
-   in let d = set x = 13 in (odd -99)" 1)
-
-      (example-for-book-1 "
-let f = proc (x) proc (y) 
-                  begin
-                   set x = -(x,-1);
-                   -(x,y)
-                  end
-in ((f 44) 33)"
-	12)
+      (varproc-3 "
+       let p = varproc(...)
+       each q in args do
+       (q 8)
+       in (p 
+           proc(a) -(a, 1) 
+           proc(b) zero?(b))"
+       (7 #f))
       
       ))
   )

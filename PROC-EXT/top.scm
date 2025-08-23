@@ -14,16 +14,13 @@
   ;;;;;;;;;;;;;;;; interface to test harness ;;;;;;;;;;;;;;;;
   
   ;; run : String -> ExpVal
-
   (define run
     (lambda (string)
       (value-of-program (scan&parse string))))
   
   ;; run-all : () -> Unspecified
-
   ;; runs all the tests in test-list, comparing the results with
   ;; equal-answer?  
-
   (define run-all
     (lambda ()
       (run-tests! run equal-answer? test-list)))
@@ -37,10 +34,12 @@
       (cond
         ((number? sloppy-val) (num-val sloppy-val))
         ((boolean? sloppy-val) (bool-val sloppy-val))
+        ((list? sloppy-val) (list-val (map sloppy->expval sloppy-val)))
         (else
          (eopl:error 'sloppy->expval 
                      "Can't convert sloppy value to expval: ~s"
                      sloppy-val)))))
+
     
   ;; run-one : Sym -> ExpVal
   ;; (run-one sym) runs the test whose name is sym
@@ -53,7 +52,7 @@
                 (run (cadr test))))
           (else (eopl:error 'run-one "no such test: ~s" test-name))))))
  
-  ;; (run-all)
+  (run-all)
   
   )
 

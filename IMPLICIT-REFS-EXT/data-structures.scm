@@ -19,6 +19,7 @@
       (proc proc?))
     (ref-val
       (ref reference?))
+    (uninit-val)
     )
 
 ;;; extractors:
@@ -27,6 +28,7 @@
     (lambda (v)
       (cases expval v
 	(num-val (num) num)
+        (uninit-val () 900)
 	(else (expval-extractor-error 'num v)))))
 
   (define expval->bool
@@ -41,11 +43,17 @@
 	(proc-val (proc) proc)
 	(else (expval-extractor-error 'proc v)))))
 
-(define expval->ref
+  (define expval->ref
     (lambda (v)
       (cases expval v
-	(ref-val (ref) ref)
-	(else (expval-extractor-error 'reference v)))))
+        (ref-val (ref) ref)
+        (else (expval-extractor-error 'reference v)))))
+  
+  (define expval->uninit
+    (lambda (v)
+      (cases expval v
+        (uninit-val () 900)
+        (else (expval-extractor-error 'uninit v)))))
 
   (define expval-extractor-error
     (lambda (variant value)

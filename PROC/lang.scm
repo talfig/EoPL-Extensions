@@ -45,16 +45,8 @@
        proc-exp)
 
       (expression
-       ("(" expression (arbno expression) ")")
+       ("(" expression expression ")")
        call-exp)
-      
-      (expression
-       ("varproc" "(" "..." ")" expression)
-       varproc-exp)
-      
-      (expression
-       ("each" identifier "in" "args" "do" expression)
-       each-exp)
       
       ))
 

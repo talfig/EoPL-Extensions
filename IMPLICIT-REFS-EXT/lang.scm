@@ -63,6 +63,10 @@
       (expression
         ("set" identifier "=" expression)
         assign-exp)
+      
+      (expression
+        ("???")
+        uninit-exp)
 
       ))
 

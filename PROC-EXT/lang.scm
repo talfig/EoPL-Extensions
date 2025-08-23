@@ -1,7 +1,7 @@
 (module lang (lib "eopl.ss" "eopl")                
-  
-  ;; language for IMPLICIT-REFS
 
+  ;; grammar for the PROC language
+  
   (require "drscheme-init.scm")
   
   (provide (all-defined))
@@ -45,25 +45,17 @@
        proc-exp)
 
       (expression
-       ("(" expression expression ")")
+       ("(" expression (arbno expression) ")")
        call-exp)
-
-      (expression
-        ("letrec"
-          (arbno identifier "(" identifier ")" "=" expression)
-           "in" expression)
-        letrec-exp)
       
       (expression
-        ("begin" expression (arbno ";" expression) "end")
-        begin-exp)
-
-      ;; new for implicit-refs
-
+       ("varproc" "(" "..." ")" expression)
+       varproc-exp)
+      
       (expression
-        ("set" identifier "=" expression)
-        assign-exp)
-
+       ("each" identifier "in" "args" "do" expression)
+       each-exp)
+      
       ))
 
   ;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;
