@@ -84,7 +84,7 @@
        let p = varproc(...)
        each v in args do
        -(v, 2)
-       in (p )" ())
+       in (p)" ())
       
       (varproc-3 "
        let p = varproc(...)
