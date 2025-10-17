@@ -63,6 +63,9 @@
     (procedure
       (var symbol?)
       (body expression?)
+      (env environment?))
+    (var-procedure
+      (body expression?)
       (env environment?)))
 
 ;;;;;;;;;;;;;;;; environment structures ;;;;;;;;;;;;;;;;
