@@ -1,0 +1,3 @@
+[submodule "TEST-EXTS"]
+	path = TEST-EXTS
+	url = https://github.com/talfig/EoPL-Extensions.git
